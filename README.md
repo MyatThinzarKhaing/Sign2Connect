@@ -16,7 +16,14 @@ Uses CNN (ResNet50) + Transformer for feature extraction and sequence modeling.
 - `utils/`: Helper functions
 - `requirements.txt`: Python dependencies
 
+## Authorization / Team
+This project was developed as a **special project at MIIT** by:
+
+- **Myat Thinzar Khaing** – Project lead, model development, Flask integration, Preprocessing, data augmentation, and notebooks
+- **Thel Nandar Soe** – model development, Flask integration, Preprocessing, data augmentation, and notebooks  
+- **Myat Thiri Aung** – model development, Flask integration, Preprocessing, data augmentation, and notebooks
+
 ## Installation
 1. Clone repo:
 ```bash
-git clone https://github.com/yourusername/Myanmar-Sign-Language-Recognition.git
+git clone https://github.com/MyatThinzarKhaing/Sign2Connect.git
