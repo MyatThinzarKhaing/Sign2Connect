@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <style>
+        .header {
+            width: 100%;
+            padding: 15px 0;
+            text-align: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            color: black;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+        }
+        .logo-container img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        .logo-container h1 {
+            font-size: 18px;
+            color: black;
+            font-weight: 600;
+            margin-left: 0px;
+        }
+        .ctext{
+            text-align: center;
+            font-size: 130%;
+            font-weight: bold;
+            padding: 20px;
+            margin-top: 80px;
+            color: #2b2bbf;
+            background: #e0fffb;
+            border: 2px solid #2b2bbf; transition: 0.3s ease-in-out;
+            border-radius: 10px;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        * {margin: 0; padding: 0; box-sizing: border-box; font-family: Lobster, serif;}
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
+
+            background-image: url("{{ url_for('static', filename='images/bg.jpg') }}");
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
+         .predict-wrapper {
+            position: absolute;
+            top: calc(50% + 170px); /* pushes below drag-area */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e0fffb;
+            border: 2px solid #2b2bbf; transition: 0.3s ease-in-out;
+            border-radius: 10px;
+        }
+         .footer { width: 100%; background: #2b2bbf; padding: 10px 0; text-align: center; position: fixed; bottom: 0; left: 0; backdrop-filter: blur(10px); box-shadow: 0 -2px 15px rgba(255,255,255,0.3); }
+        .footer-content p { color: white; font-size: 13px; margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+        <h1 class="name" style="color:#2b2bbf">Sign2Connect</h1>
+    </div>
+</header>
+
+<div class="ctext">
+    <p style="font-size:40px">Top Predictions</p>
+    <ul>
+        {% for sign, conf in predictions %}
+            <li>{{ sign }} — confidence: {{ "%.4f"|format(conf) }}</li>
+        {% endfor %}
+    </ul>
+</div>
+    <div class="predict-wrapper">
+           <a href="{{ url_for('index') }}">Try another video</a>
+        </div>
+
+
+<footer class="footer">
+    <div class="footer-content">
+        <p> MYANMAR INSTITUTE OF INFORMATION TECHNOLOGY</p>
+    </div>
+</footer>
+</body>
+</html>

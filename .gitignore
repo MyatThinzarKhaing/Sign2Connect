@@ -1,0 +1,18 @@
+# created by virtualenv automatically
+
+# Ignore Python virtual environment
+.venv/
+
+# Ignore IDE files
+.idea/
+*.iml
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore dataset or large model files (optional)
+dataset/
+*.h5
+*.ckpt

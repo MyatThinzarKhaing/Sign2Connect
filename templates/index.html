@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop or Browse: Video Upload</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <style>
+        .header {
+            width: 100%;
+            padding: 15px 0;
+            text-align: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            color: black;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 20px;
+        }
+        .logo-container img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        .logo-container h1 {
+            font-size: 18px;
+            color: black;
+            font-weight: 600;
+            margin-left: 0px;
+        }
+        .ctext{
+            text-align: center;
+            font-size: 130%;
+            font-weight: bold;
+            padding: 20px;
+            margin-top: -28%;
+            color: #2b2bbf;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        * {margin: 0; padding: 0; box-sizing: border-box; font-family: Lobster, serif;}
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
+            background-color: white;
+            background-image: url("{{ url_for('static', filename='images/bg.jpg') }}");
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+        }
+        .drag-area {
+            position: absolute; top: 50%; left: 50%;
+            width: 350px; height: 250px;
+            border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; flex-direction: column;
+            text-align: center; background: #e0fffb;
+            border: 2px solid #2b2bbf; transition: 0.3s ease-in-out;
+            transform: translate(-50%, -50%);
+            box-shadow: h-offset v-offset blur-radius spread-radius color inset;
+
+        }
+        .drag-area.active { box-shadow: 0 0 30px rgba(255,255,255,0.8); }
+        .drag-area .icon { font-size: 70px; color: #2b2bbf; }
+        .drag-area header { font-size: 22px; font-weight: 500; color: #2b2bbf; }
+        .drag-area p { font-size: 18px; font-weight: 500; color: #2b2bbf; margin: 8px 0 12px 0; }
+        .drag-area button { padding: 8px 20px; font-size: 16px; font-weight: 500; border: 2px solid #2b2bbf; outline: none; background: white; color:  #2b2bbf; border-radius: 5px; cursor: pointer; }
+        .drag-area button:hover { background: yellow; }
+        .drag-area button:active { transform: scale(0.95); }
+        .drag-area video { width: 300px; height: 200px; border-radius: 12px; border: 2px solid #2b2bbf; object-fit: cover; margin-top: 10px; }
+        .footer { width: 100%; background: #2b2bbf; padding: 10px 0; text-align: center; position: fixed; bottom: 0; left: 0; backdrop-filter: blur(10px); box-shadow: 0 -2px 15px rgba(255,255,255,0.3); }
+        .footer-content p { color: black; font-size: 13px; margin: 5px 0; }
+        .predict-btn {
+            padding: 10px 25px; font-size: 16px; font-weight: 500;
+            border: none; outline: none; background: #2b2bbf; color:#6e481e;
+            border: 2px solid #ffd739; border-radius: 5px; cursor: pointer;
+            display: block; margin: 20px auto; position: relative; transition: all 0.3s ease-in-out;
+        }
+
+        .prediction-result {
+            text-align: center; margin-top: 300px; font-size: 24px; font-weight: bold; color: #6e481e;
+        }
+     .predict-wrapper {
+            position: absolute;
+            top: calc(50% + 170px); /* pushes below drag-area */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .predict-btn {
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            outline: none;
+            background: #e0fffb;
+            color: #2b2bbf;
+            border: 2px solid #2b2bbf;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .predict-btn:hover {
+            background: #fff370;
+        }
+
+        .predict-btn:active {
+            transform: scale(0.95);
+        }
+
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+        <h1 class="name" style="color:#2b2bbf;" >Sign2Connect</h1>
+    </div>
+</header>
+
+<div class="ctext">
+    <p style="font-size:40px">Recognizing Burmese Sign Language<br></p>
+    <p style="font-size:20px";>by uploading a hand sign and viewing its meaning instantly.</p>
+</div>
+
+<form action="/" method="POST" enctype="multipart/form-data">
+
+    <div class="drag-area">
+        <div class="dragg">
+            <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <header>Drag & Drop</header>
+            <p>OR</p>
+            <button type="button" id="uploadButton">Upload Video</button>
+        </div>
+        <input type="file" name="video" accept="video/*" id="fileInput" required hidden>
+    </div>
+
+    <!-- Predict button UNDER drag area -->
+    <div class="predict-wrapper">
+        <button type="submit" class="predict-btn">Predict</button>
+    </div>
+
+</form>
+
+
+<footer class="footer">
+    <div class="footer-content">
+        <p style="color:white;"> MYANMAR INSTITUTE OF INFORMATION TECHNOLOGY</p>
+    </div>
+</footer>
+
+<script>
+    const dropArea = document.querySelector(".drag-area"),
+          dropp = document.querySelector(".dragg"),
+          dragText = dropArea.querySelector("header"),
+          button = dropArea.querySelector("button"),
+          input = dropArea.querySelector("input");
+    let file;
+
+    button.onclick = () => input.click();
+
+    input.addEventListener("change", function() {
+        file = this.files[0];
+        dropArea.classList.add("active");
+        showFile();
+    });
+
+    dropArea.addEventListener("dragover", event => {
+        event.preventDefault();
+        dropArea.classList.add("active");
+        dragText.textContent = "Release to Upload File";
+    });
+
+    dropArea.addEventListener("dragleave", () => {
+        dropArea.classList.remove("active");
+        dragText.textContent = "Drag & Drop to Upload File";
+    });
+
+    dropArea.addEventListener("drop", event => {
+        event.preventDefault();
+        file = event.dataTransfer.files[0];
+        input.files = event.dataTransfer.files;
+        showFile();
+    });
+
+    function showFile() {
+        let fileType = file.type;
+        let validExtensions = ["video/mp4", "video/webm", "video/ogg"];
+        if (validExtensions.includes(fileType)) {
+            let fileReader = new FileReader();
+            fileReader.onload = () => {
+                let fileURL = fileReader.result;
+                dropp.innerHTML = `<video controls>
+                                        <source src="${fileURL}" type="${fileType}">
+                                        Your browser does not support the video tag.
+                                    </video>`;
+            };
+            fileReader.readAsDataURL(file);
+        } else {
+            alert("This is not a Video File!");
+            dropArea.classList.remove("active");
+            dragText.textContent = "Drag & Drop to Upload File";
+        }
+    }
+</script>
+
+</body>
+</html>
